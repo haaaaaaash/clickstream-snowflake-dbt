@@ -1,0 +1,12 @@
+# clickstream-snowflake-dbt: Python 3.11
+# install: uv pip install -r requirements.txt
+# Snowflake CLI is installed separately: uv tool install snowflake-cli
+
+# Transformation
+dbt-core>=1.12,<1.13
+dbt-snowflake>=1.12,<2.0
+
+# EDA (notebooks/)
+pandas
+matplotlib
+jupyterlab

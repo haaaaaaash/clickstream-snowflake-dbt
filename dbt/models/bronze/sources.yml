@@ -1,0 +1,22 @@
+version: 2
+
+sources:
+  - name: raw
+    description: "Raw e-commerce clickstream data, loaded from CSV with COPY INTO (snowflake/03_load_raw_data.sql). Source format kept as-is."
+    database: CLICKSTREAM_DB
+    schema: RAW
+    tables:
+      - name: customers
+        description: "One row per registered customer."
+      - name: products
+        description: "Product catalog with price, cost and margin."
+      - name: sessions
+        description: "One row per website/app session."
+      - name: events
+        description: "Clickstream events: page_view, add_to_cart, checkout, purchase."
+      - name: orders
+        description: "One row per order, with totals and discount."
+      - name: order_items
+        description: "Order lines. (order_id, product_id) can repeat (see EDA finding #4)."
+      - name: reviews
+        description: "Product reviews per order."

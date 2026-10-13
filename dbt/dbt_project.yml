@@ -1,0 +1,39 @@
+# 1. Project
+name: 'clickstream_snowflake_dbt'
+version: '1.0.0'
+profile: 'clickstream_snowflake_dbt'   # must match the top-level key in profiles.yml
+
+# 2. Project directories
+model-paths: ["models"]
+test-paths: ["tests"]
+macro-paths: ["macros"]
+seed-paths: ["seeds"]
+analysis-paths: ["analyses"]
+
+# 3. Generated files (removed by `dbt clean`)
+target-path: "target"
+clean-targets:
+  - "target"
+  - "dbt_packages"
+
+# 4. Materialization per medallion layer
+models:
+  clickstream_snowflake_dbt:
+    bronze:                       # src_*: rename + cast only, no object in Snowflake
+      +materialized: ephemeral
+    silver:                       # dim_* / fct_*: cleaned, typed, joined
+      +materialized: table
+      +schema: silver
+    gold:                         # mart_*: business-ready aggregates
+      +materialized: table
+      +schema: gold
+
+# 5. Failed test rows are saved for debugging
+data_tests:
+  +store_failures: true
+  +schema: test_failures
+
+# 6. Seeds: small static lookups, stored next to Silver
+seeds:
+  clickstream_snowflake_dbt:
+    +schema: silver

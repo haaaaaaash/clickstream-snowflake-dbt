@@ -1,0 +1,33 @@
+version: 2
+
+models:
+  - name: mart_session_metrics
+    description: "Session KPIs per month x device x traffic source x country: conversion, revenue, AOV, duration. Excludes the partial last month."
+    data_tests:
+      - dbt_utils.unique_combination_of_columns:
+          arguments:
+            combination_of_columns: [session_month, device, traffic_source, country]
+    columns:
+      - name: conversion_rate
+        description: "Sessions with a purchase / all sessions."
+        data_tests: [not_null]
+
+  - name: mart_conversion_funnel
+    description: "Funnel per month x device: sessions reaching view -> cart -> checkout -> purchase, with step conversion rates. Excludes the partial last month."
+    data_tests:
+      - dbt_utils.unique_combination_of_columns:
+          arguments:
+            combination_of_columns: [session_month, device]
+    columns:
+      - name: session_conversion_rate
+        description: "Purchased sessions / all sessions."
+        data_tests: [not_null]
+
+  - name: mart_product_performance
+    description: "One row per product: orders, units, revenue, gross profit, engagement (views, add-to-carts) and reviews."
+    columns:
+      - name: product_id
+        description: "Primary key."
+        data_tests: [unique, not_null]
+      - name: gross_profit_usd
+        description: "Revenue minus units sold x unit cost."

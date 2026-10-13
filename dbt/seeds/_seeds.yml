@@ -1,0 +1,18 @@
+version: 2
+
+seeds:
+  - name: country_codes
+    description: "Lookup: all 249 ISO 3166-1 countries (alpha-2, alpha-3, name). Static reference data, so new countries in the source still resolve."
+    config:
+      column_types:
+        country_code: varchar(2)
+        country_code_iso3: varchar(3)
+        country_name: varchar
+    columns:
+      - name: country_code
+        description: "ISO 3166-1 alpha-2 code (primary key), e.g. DE."
+        data_tests: [unique, not_null]
+      - name: country_code_iso3
+        description: "ISO 3166-1 alpha-3 code, e.g. DEU."
+      - name: country_name
+        description: "Common English country name."

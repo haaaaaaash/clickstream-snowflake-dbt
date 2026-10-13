@@ -1,0 +1,56 @@
+<mxfile host="Electron" modified="2026-10-12T15:54:10.291Z" agent="Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) draw.io/21.7.5 Chrome/114.0.5735.289 Electron/25.8.1 Safari/537.36" etag="RjvsSuaJ7zc450JUGHri" version="21.7.5" type="device">
+  <diagram id="Pipeline" name="Pipeline">
+    <mxGraphModel dx="1182" dy="683" grid="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="1654" pageHeight="1169" background="#ffffff" math="0" shadow="0">
+      <root>
+        <mxCell id="0" />
+        <mxCell id="1" parent="0" />
+        <mxCell id="sf" value="&amp;nbsp; &amp;nbsp;Snowflake" style="rounded=1;whiteSpace=wrap;html=1;dashed=1;fillColor=#FAE5C7;strokeColor=#0F8B8D;fontColor=#143642;fontStyle=1;verticalAlign=top;align=left;spacingLeft=10;labelBackgroundColor=none;" parent="1" vertex="1">
+          <mxGeometry x="250" y="60" width="1000" height="230" as="geometry" />
+        </mxCell>
+        <mxCell id="dbt" value="dbt Core (transformations, tests, docs)" style="rounded=1;whiteSpace=wrap;html=1;dashed=1;fillColor=#FAE5C7;strokeColor=#0F8B8D;fontColor=#143642;fontStyle=1;verticalAlign=top;align=left;spacingLeft=10;labelBackgroundColor=none;" parent="1" vertex="1">
+          <mxGeometry x="470" y="95" width="765" height="180" as="geometry" />
+        </mxCell>
+        <mxCell id="csv" value="&lt;b&gt;CSV files&lt;/b&gt;&lt;br&gt;&lt;font style=&quot;font-size:11px&quot;&gt;data/raw/&lt;br&gt;7 files, ~1M rows&lt;/font&gt;" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#FAE5C7;strokeColor=#0F8B8D;fontSize=13;fontColor=#143642;labelBackgroundColor=none;" parent="1" vertex="1">
+          <mxGeometry x="40" y="140" width="170" height="90" as="geometry" />
+        </mxCell>
+        <mxCell id="raw" value="&lt;b&gt;RAW&lt;/b&gt;&lt;br&gt;&lt;font style=&quot;font-size:11px&quot;&gt;stage + COPY INTO&lt;br&gt;7 tables&lt;/font&gt;" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#FAE5C7;strokeColor=#0F8B8D;fontSize=13;fontColor=#143642;labelBackgroundColor=none;" parent="1" vertex="1">
+          <mxGeometry x="270" y="140" width="180" height="90" as="geometry" />
+        </mxCell>
+        <mxCell id="bronze" value="&lt;b&gt;Bronze: src_*&lt;/b&gt;&lt;br&gt;&lt;font style=&quot;font-size:11px&quot;&gt;ephemeral&lt;br&gt;rename + cast types&lt;/font&gt;" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#FAE5C7;strokeColor=#0F8B8D;fontSize=13;fontColor=#143642;labelBackgroundColor=none;" parent="1" vertex="1">
+          <mxGeometry x="490" y="140" width="230" height="90" as="geometry" />
+        </mxCell>
+        <mxCell id="silver" value="&lt;b&gt;Silver: dim_* / fct_*&lt;/b&gt;&lt;br&gt;&lt;font style=&quot;font-size:11px&quot;&gt;table&lt;br&gt;clean, join, surrogate keys&lt;/font&gt;" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#FAE5C7;strokeColor=#0F8B8D;fontSize=13;fontColor=#143642;labelBackgroundColor=none;" parent="1" vertex="1">
+          <mxGeometry x="740" y="140" width="230" height="90" as="geometry" />
+        </mxCell>
+        <mxCell id="gold" value="&lt;b&gt;Gold: mart_*&lt;/b&gt;&lt;br&gt;&lt;font style=&quot;font-size:11px&quot;&gt;table&lt;br&gt;sessions, funnel, products&lt;/font&gt;" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#FAE5C7;strokeColor=#0F8B8D;fontSize=13;fontColor=#143642;labelBackgroundColor=none;" parent="1" vertex="1">
+          <mxGeometry x="990" y="140" width="230" height="90" as="geometry" />
+        </mxCell>
+        <mxCell id="tests" value="&lt;b&gt;dbt tests + docs&lt;/b&gt;&lt;br&gt;&lt;font style=&quot;font-size:11px&quot;&gt;unique, not_null, relationships, accepted_values, custom tests → lineage graph&lt;/font&gt;" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#FAE5C7;strokeColor=#0F8B8D;fontSize=13;dashed=1;fontColor=#143642;labelBackgroundColor=none;" parent="1" vertex="1">
+          <mxGeometry x="490" y="330" width="730" height="60" as="geometry" />
+        </mxCell>
+        <mxCell id="a1" value="&lt;font color=&quot;#000000&quot;&gt;PUT&lt;/font&gt;" style="edgeStyle=orthogonalEdgeStyle;html=1;endArrow=block;endFill=1;strokeWidth=2;fontSize=10;labelBackgroundColor=none;fillColor=#FAE5C7;strokeColor=#A8201A;fontColor=default;" parent="1" source="csv" target="raw" edge="1">
+          <mxGeometry x="-0.3333" y="15" relative="1" as="geometry">
+            <mxPoint as="offset" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="a2" value="&lt;font color=&quot;#000000&quot;&gt;source()&lt;/font&gt;" style="edgeStyle=orthogonalEdgeStyle;html=1;endArrow=block;endFill=1;strokeWidth=2;fontSize=10;labelBackgroundColor=none;fillColor=#FAE5C7;strokeColor=#A8201A;fontColor=default;" parent="1" edge="1">
+          <mxGeometry x="-0.1" y="15" relative="1" as="geometry">
+            <mxPoint x="452" y="185" as="sourcePoint" />
+            <mxPoint x="492" y="185" as="targetPoint" />
+            <mxPoint as="offset" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="a3" value="&lt;font color=&quot;#000000&quot;&gt;ref()&lt;/font&gt;" style="edgeStyle=orthogonalEdgeStyle;html=1;endArrow=block;endFill=1;strokeWidth=2;fontSize=10;labelBackgroundColor=none;fillColor=#FAE5C7;strokeColor=#A8201A;fontColor=default;" parent="1" source="bronze" target="silver" edge="1">
+          <mxGeometry y="15" relative="1" as="geometry">
+            <mxPoint as="offset" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="a4" value="&lt;font color=&quot;#000000&quot;&gt;ref()&lt;/font&gt;" style="edgeStyle=orthogonalEdgeStyle;html=1;endArrow=block;endFill=1;strokeWidth=2;fontSize=10;labelBackgroundColor=none;fillColor=#FAE5C7;strokeColor=#A8201A;fontColor=default;" parent="1" source="silver" target="gold" edge="1">
+          <mxGeometry y="15" relative="1" as="geometry">
+            <mxPoint as="offset" />
+          </mxGeometry>
+        </mxCell>
+      </root>
+    </mxGraphModel>
+  </diagram>
+</mxfile>

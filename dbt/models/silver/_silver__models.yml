@@ -1,0 +1,130 @@
+version: 2
+
+models:
+  - name: dim_customers
+    description: "One row per customer."
+    columns:
+      - name: customer_id
+        description: "Primary key."
+        data_tests: [unique, not_null]
+      - name: country
+        description: "ISO-2 country code."
+        data_tests:
+          - relationships:
+              arguments:
+                to: ref('country_codes')
+                field: country_code
+      - name: signup_date
+        description: "Parsed from M/D/YYYY text in Bronze."
+        data_tests: [not_null]
+      - name: email_hash
+        description: "SHA-256 hash of the lower-cased email (pseudonymized PII). Raw name/email stay in RAW only."
+        data_tests: [unique, not_null]
+
+  - name: dim_products
+    description: "One row per product, with margin %."
+    columns:
+      - name: product_id
+        description: "Primary key."
+        data_tests: [unique, not_null]
+
+  - name: fct_sessions
+    description: "One row per session, with event counts and funnel flags."
+    columns:
+      - name: session_id
+        description: "Primary key."
+        data_tests: [unique, not_null]
+      - name: customer_id
+        data_tests:
+          - not_null
+          - relationships:
+              arguments:
+                to: ref('dim_customers')
+                field: customer_id
+
+  - name: fct_events
+    description: "One row per clickstream event. Event-specific fields are NULL by design for other event types."
+    columns:
+      - name: event_id
+        description: "Primary key."
+        data_tests: [unique, not_null]
+      - name: session_id
+        data_tests:
+          - not_null
+          - relationships:
+              arguments:
+                to: ref('fct_sessions')
+                field: session_id
+      - name: event_type
+        data_tests:
+          - accepted_values:
+              arguments:
+                values: ['page_view', 'add_to_cart', 'checkout', 'purchase']
+      - name: product_id
+        description: "Only set for page_view and add_to_cart."
+        data_tests:
+          - relationships:
+              arguments:
+                to: ref('dim_products')
+                field: product_id
+      - name: amount_usd
+        description: "Only set for purchase events."
+        data_tests:
+          - not_null:
+              config:
+                where: "event_type = 'purchase'"
+
+  - name: fct_orders
+    description: "One row per order, linked to its session via customer_id + timestamp."
+    columns:
+      - name: order_id
+        description: "Primary key."
+        data_tests: [unique, not_null]
+      - name: customer_id
+        data_tests:
+          - not_null
+          - relationships:
+              arguments:
+                to: ref('dim_customers')
+                field: customer_id
+      - name: session_id
+        description: "Session in which the order was placed (100% match in the EDA)."
+        data_tests: [not_null]
+
+  - name: fct_order_items
+    description: "One row per (order_id, product_id). Repeated raw lines are aggregated, not dropped."
+    columns:
+      - name: order_item_key
+        description: "Surrogate key: hash of order_id + product_id."
+        data_tests: [unique, not_null]
+      - name: order_id
+        data_tests:
+          - relationships:
+              arguments:
+                to: ref('fct_orders')
+                field: order_id
+      - name: product_id
+        data_tests:
+          - relationships:
+              arguments:
+                to: ref('dim_products')
+                field: product_id
+
+  - name: fct_reviews
+    description: "One row per review, with a flag for reviews dated before their order."
+    columns:
+      - name: review_id
+        description: "Primary key."
+        data_tests: [unique, not_null]
+      - name: rating
+        data_tests:
+          - accepted_values:
+              arguments:
+                values: [1, 2, 3, 4, 5]
+                quote: false
+      - name: order_id
+        data_tests:
+          - relationships:
+              arguments:
+                to: ref('fct_orders')
+                field: order_id

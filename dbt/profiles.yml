@@ -1,0 +1,17 @@
+# profiles.yml: dbt -> Snowflake connection (key-pair auth)
+# No secrets in this file: everything sensitive comes from environment variables (.env).
+# dbt finds this file because it sits in the project root (where dbt is run from).
+clickstream_snowflake_dbt:
+  target: dev
+  outputs:
+    dev:
+      type: snowflake
+      account: "{{ env_var('SNOWFLAKE_ACCOUNT') }}"
+      user: DBT_USER
+      role: TRANSFORM
+      warehouse: TRANSFORM_WH
+      database: CLICKSTREAM_DB
+      schema: SILVER                      # default schema; Gold/test schemas set in dbt_project.yml
+      private_key_path: "{{ env_var('HOME') }}/.ssh/snowflake/rsa_key.p8"
+      private_key_passphrase: "{{ env_var('DBT_PRIVATE_KEY_PASSPHRASE') }}"
+      threads: 4
